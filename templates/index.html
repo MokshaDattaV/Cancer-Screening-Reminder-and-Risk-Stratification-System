@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cancer Risk Prediction</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to bottom right, #fdfbfb, #ebedee);
+            padding: 40px;
+            text-align: center;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: inline-block;
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 12px 24px;
+            background-color: #007BFF;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result-box {
+            margin-top: 30px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            display: inline-block;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            max-width: 400px;
+        }
+
+        .result-box h3 {
+            color: #444;
+            margin-bottom: 15px;
+        }
+
+        .result-box p {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+
+        .footer-buttons {
+            margin-top: 20px;
+        }
+
+        a button {
+            margin-top: 10px;
+            background: #28a745;
+        }
+
+        a button:hover {
+            background: #1e7e34;
+        }
+
+        .urgent {
+            color: red;
+        }
+
+        .warn {
+            color: orange;
+        }
+
+        .low {
+            color: darkgoldenrod;
+        }
+    </style>
+</head>
+<body>
+
+<h2> Cancer Risk Prediction Portal</h2>
+
+<form method="POST">
+    <div class="form-grid">
+        <input name="f1" placeholder="Age" required>
+        <input name="f2" placeholder="Sex (0=F, 1=M)" required>
+        <input name="f3" placeholder="Smoking (0-1)" required>
+        <input name="f4" placeholder="Alcohol (0-1)" required>
+        <input name="f5" placeholder="Exercise (0-1)" required>
+        <input name="f6" placeholder="Family History (0-1)" required>
+        <input name="f7" placeholder="BMI" required>
+        <input name="f8" placeholder="Diet (0=Bad, 1=Good)" required>
+        <input name="f9" placeholder="Chemo History (0-1)" required>
+    </div>
+    <button type="submit">🧾 Predict</button>
+</form>
+
+{% if result %}
+    <div class="result-box">
+        <h3>📊 Prediction Results</h3>
+        <p><strong>Overall Cancer Probability:</strong> {{ result.cancer }}%</p>
+        <p>🩺 Breast Cancer: {{ result.breast }}%</p>
+        <p>🧫 Cervical Cancer: {{ result.cervix }}%</p>
+        <p>🧻 Colorectal Cancer: {{ result.colorectal }}%</p>
+        <p class="{% if result.urgency == 'Very Urgent' %}urgent{% elif result.urgency == 'Urgent' %}warn{% else %}low{% endif %}">
+            Risk Level: <strong>{{ result.urgency }}</strong>
+        </p>
+        {% if result.urgency != 'Low' %}
+            <div class="footer-buttons">
+                <a href="{{ url_for('calendar') }}">
+                    <button>📅 Schedule Screening</button>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+{% elif error %}
+    <p style="color: red;">⚠️ Error: {{ error }}</p>
+{% endif %}
+
+<div class="footer-buttons">
+    <a href="{{ url_for('logs') }}"><button>📜 View Prediction Logs</button></a>
+</div>
+
+</body>
+</html>
+
